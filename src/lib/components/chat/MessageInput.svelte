@@ -1437,6 +1437,10 @@
 										{/key}
 									{/if}
 								</div>
+								<!-- Token count display -->
+							<div class="absolute bottom-3 right-20 flex items-center gap-2 text-xs font-semibold text-blue-500 dark:text-blue-300 z-10 bg-white/80 dark:bg-gray-800/80 px-3 py-1 rounded-full shadow-md border border-gray-200 dark:border-gray-700">
+	<span>{$i18n.t('Tokens')}: <span class="font-mono text-xs">123</span></span>
+</div>
 							</div>
 
 							<div class=" flex justify-between mt-0.5 mb-2.5 mx-0.5 max-w-full" dir="ltr">

@@ -642,7 +642,7 @@
 	>
 		<div class={`shrink-0 ltr:mr-3 rtl:ml-3 hidden @lg:flex mt-1 `}>
 			<ProfileImage
-				src={`${WEBUI_API_BASE_URL}/models/model/profile/image?id=${model?.id}&lang=${$i18n.language}`}
+				src={campaigns ? `https://avatars.githubusercontent.com/u/44399625?s=200&v=4` : `${WEBUI_API_BASE_URL}/models/model/profile/image?id=${model?.id}&lang=${$i18n.language}`}
 				className={'size-8 assistant-message-profile-image'}
 			/>
 		</div>
@@ -1478,9 +1478,13 @@
 				{/if}
 				{#if campaigns}
 					<div class="mt-2.5">
-						{#each campaigns as campaign}
+						<div class="text-center text-gray-700 dark:text-gray-300 mb-4">
+						You are out of tokens, but don't worry! You can earn more tokens by downloading one of the games below and playing it. Each game has a different token reward, so choose the one that suits you best. Happy gaming!
+						</div>
+						<div class="flex flex-wrap justify-center gap-4" >
+							{#each campaigns as campaign}
 							<div
-								class="border rounded-2xl p-5 mb-4 flex flex-col items-center bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 shadow-lg w-120 mx-auto">
+								class="border rounded-2xl p-5 mb-4 flex flex-row items-left bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 shadow-lg w-90 mx-3">
 								<div class="flex flex-col items-center w-full">
 									<!-- ICON and Name -->
 									<div class="flex items-center mb-3 w-full justify-center">
@@ -1537,6 +1541,7 @@
 								</div>
 							</div>
 						{/each}
+						</div>
 					</div>
 				{/if}
 			</div>
