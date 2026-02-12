@@ -41,7 +41,16 @@ type CampaignDetail struct {
 	ImageURLs              CreativeURLs      `json:"ImageURLs"`
 	EventConfigs           EventConfigs      `json:"EventConfigs"`
 	CashbackConfig         CashbackSDKConfig `json:"CashbackSDKConfig"`
+	Promotion              *Promotion        `json:",omitempty"`
 }
+type Promotion struct {
+	Name        string     `json:",omitempty"`
+	Description string     `json:",omitempty"`
+	BoostFactor float32    `json:",omitempty"`
+	StartAt     *time.Time `json:",omitempty"`
+	StopAt      *time.Time `json:",omitempty"`
+}
+
 type CashbackSDKConfig struct {
 	IsEnabled              bool    `json:"IsEnabled"`
 	ExchangeRate           float64 `json:"ExchangeRate"`
@@ -132,6 +141,7 @@ type Offer struct {
 	Description    string            `json:"Description"`
 	EventConfigs   EventConfigs      `json:"EventConfigs"`
 	CashbackConfig CashbackSDKConfig `json:"CashbackSDKConfig"`
+	Promotion      *Promotion        `json:",omitempty"`
 }
 
 type OffersResponse struct {
@@ -264,15 +274,6 @@ func processCampaignDetails(offers *OffersResponse, sdkHash, userUUID string) {
 			fmt.Printf("Error fetching details for %s: %v\n", offer.AppName, err)
 			continue
 		}
-		//bodyBytes, _ := io.ReadAll(resp.Body)
-
-		// Re-open the body for the JSON decoder since we just read it
-		//resp.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
-		//fmt.Println("--- DEBUG DATA ---")
-		//fmt.Println("Status Code:", resp.StatusCode)
-		//fmt.Println("Full URL:", req.URL)
-		//fmt.Println("Response Body:", string(bodyBytes))
-		//fmt.Println("------------------")
 		defer resp.Body.Close()
 
 		var detailResp CampaignDetailsResponse
@@ -284,11 +285,11 @@ func processCampaignDetails(offers *OffersResponse, sdkHash, userUUID string) {
 		// Extract the info you need (assuming 1 campaign per token)
 		if len(detailResp.Campaigns) > 0 {
 			c := detailResp.Campaigns[0]
-			fmt.Println("DEBUG", c.App.Name)
 			offer.App = c.App
 			offer.CashbackConfig = c.CashbackConfig
 			offer.Description = c.Description
 			offer.EventConfigs = c.EventConfigs
+			offer.Promotion = c.Promotion
 		}
 	}
 }
