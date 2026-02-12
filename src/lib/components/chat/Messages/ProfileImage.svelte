@@ -12,7 +12,7 @@
 		: src.startsWith(WEBUI_BASE_URL) ||
 			  src.startsWith('https://www.gravatar.com/avatar/') ||
 			  src.startsWith('data:') ||
-			  src.startsWith('/')
+			  src.startsWith('/') || src.startsWith('https')
 			? src
 			: `${WEBUI_BASE_URL}/user.png`}
 	class=" {className} object-cover rounded-full"
