@@ -931,7 +931,27 @@ async def get_chat_by_id(
     chat = Chats.get_chat_by_id_and_user_id(id, user.id, db=db)
 
     if chat:
-        return ChatResponse(**chat.model_dump())
+        response = ChatResponse(**chat.model_dump())
+
+        # Check balance and inject campaign if needed
+        try:
+            from open_webui.utils.balance import get_campaign_if_needed
+
+            campaign = get_campaign_if_needed(0)
+            if campaign and response.chat and "messages" in response.chat:
+                messages = response.chat["messages"]
+                # Find the last assistant message and attach campaign
+                for msg in reversed(messages):
+                    if isinstance(msg, dict) and msg.get("role") == "assistant":
+                        msg["campaign"] = campaign
+                        break
+        except Exception as e:
+            import logging
+            logging.getLogger(__name__).warning(
+                f"Balance check in get_chat_by_id failed: {e}"
+            )
+
+        return response
 
     else:
         raise HTTPException(

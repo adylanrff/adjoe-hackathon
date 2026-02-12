@@ -112,7 +112,7 @@
 			usage?: unknown;
 		};
 		annotation?: { type: string; rating: number };
-		campaigns?: [{ name: string, id: string, clickUUID: string, image: string, icon: string, }];
+		campaign?: any[];
 
 	}
 
@@ -341,69 +341,25 @@
 
 	let flipped = {};
 
-	let campaigns = [{
-		name: 'Candy Crush Saga',
-		id: 'candy-crush-1',
+	$: campaigns = (message.campaign || []).map((offer) => ({
+		name: offer.AppName || offer.App?.Name || 'Unknown',
+		id: offer.AppID || offer.App?.ID || offer.Token,
 		clickLink: '',
-		boostFactor: 2,
+		boostFactor: offer.Promotion?.Factor || 1,
 		offerwallLink: 'https://adylanios.webofferwall.sb2.mainsb2.com/play?user_id=123123',
-		image: 'https://m.media-amazon.com/images/I/81u6jGIbTBL.jpg',
-		maxCoins: 250,
-		icon: 'https://play-lh.googleusercontent.com/JvMhIxuwArVmcMReJQB8PIEB1MIQNMGf9j5i914JtkBrHrA55K-nMUIVlYCa7SXAdHtzLtsycEo6NpXeHFxLwvI',
-		description: 'Switch and match Candies in this tasty puzzle adventure to progress to the next level for that sweet winning feeling! Solve puzzles with quick thinking and smart moves, and be rewarded with delicious Rainbow-Colored Cascades and tasty Candy combos!',
-		events: [
-			{ name: 'Install and Open', reward: 10 },
-			{ name: 'Reach Level 20', reward: 40 },
-			{ name: 'Reach Level 50', reward: 100 },
-			{ name: 'Reach Level 100', reward: 200 },
-			{ name: 'Make a Purchase', reward: 200 }
-		],
-		bonusEvents: [
-			{ name: 'First Purchase Bonus', reward: 500 },
-			{ name: 'Reach Level 250', reward: 1000 }
-		],
-		cashback: { coins: 50, currency: '$' }
-	},{
-		name: 'Candy Crush Saga',
-		id: 'candy-crush-2',
-		clickLink: '',
-		offerwallLink: 'https://adylanios.webofferwall.sb2.mainsb2.com/play?user_id=123123',
-		image: 'https://m.media-amazon.com/images/I/81u6jGIbTBL.jpg',
-		maxCoins: 250,
-		icon: 'https://play-lh.googleusercontent.com/JvMhIxuwArVmcMReJQB8PIEB1MIQNMGf9j5i914JtkBrHrA55K-nMUIVlYCa7SXAdHtzLtsycEo6NpXeHFxLwvI',
-		description: 'Switch and match Candies in this tasty puzzle adventure to progress to the next level for that sweet winning feeling! Solve puzzles with quick thinking and smart moves, and be rewarded with delicious Rainbow-Colored Cascades and tasty Candy combos!',
-		events: [
-			{ name: 'Install and Open', reward: 10 },
-			{ name: 'Reach Level 20', reward: 40 },
-			{ name: 'Make a Purchase', reward: 200 }
-		]
-	},{
-		clickLink: '',
-		offerwallLink: 'https://adylanios.webofferwall.sb2.mainsb2.com/play?user_id=123123',
-		image: 'https://m.media-amazon.com/images/I/81u6jGIbTBL.jpg',
-		maxCoins: 250,
-		icon: 'https://play-lh.googleusercontent.com/JvMhIxuwArVmcMReJQB8PIEB1MIQNMGf9j5i914JtkBrHrA55K-nMUIVlYCa7SXAdHtzLtsycEo6NpXeHFxLwvI',
-		description: 'Switch and match Candies in this tasty puzzle adventure to progress to the next level for that sweet winning feeling! Solve puzzles with quick thinking and smart moves, and be rewarded with delicious Rainbow-Colored Cascades and tasty Candy combos!',
-		events: [
-			{ name: 'Install and Open', reward: 10 },
-			{ name: 'Reach Level 20', reward: 40 },
-			{ name: 'Make a Purchase', reward: 200 }
-		]
-	},{
-		name: 'Candy Crush Saga',
-		id: 'candy-crush-3',
-		clickLink: '',
-		offerwallLink: 'https://adylanios.webofferwall.sb2.mainsb2.com/play?user_id=123123',
-		image: 'https://m.media-amazon.com/images/I/81u6jGIbTBL.jpg',
-		maxCoins: 250,
-		icon: 'https://play-lh.googleusercontent.com/JvMhIxuwArVmcMReJQB8PIEB1MIQNMGf9j5i914JtkBrHrA55K-nMUIVlYCa7SXAdHtzLtsycEo6NpXeHFxLwvI',
-		description: 'Switch and match Candies in this tasty puzzle adventure to progress to the next level for that sweet winning feeling! Solve puzzles with quick thinking and smart moves, and be rewarded with delicious Rainbow-Colored Cascades and tasty Candy combos!',
-		events: [
-			{ name: 'Install and Open', reward: 10 },
-			{ name: 'Reach Level 20', reward: 40 },
-			{ name: 'Make a Purchase', reward: 200 }
-		]
-	}];
+		image: offer.ImageURLs?.Landscape || offer.ImageURLs?.Portrait || '',
+		maxCoins: offer.Coins || offer.EventConfigs?.AdvancePlus?.SequentialEvents?.TotalCoinsPossible || 0,
+		icon: offer.ImageURLs?.Icon || '',
+		description: offer.Description || '',
+		events: (offer.EventConfigs?.AdvancePlus?.SequentialEvents?.Events || []).map((e) => ({
+			name: e.Name,
+			reward: e.Coins
+		})),
+		bonusEvents: [],
+		cashback: offer.CashbackConfig?.IsEnabled
+			? { coins: Math.round(offer.CashbackConfig.ExchangeRate * 100), currency: '$' }
+			: null
+	}));
 
 	function preprocessForEditing(content: string): string {
 		// Replace <details>...</details> with unique ID placeholder
@@ -682,7 +638,7 @@
 	>
 		<div class={`shrink-0 ltr:mr-3 rtl:ml-3 hidden @lg:flex mt-1 `}>
 			<ProfileImage
-				src={campaigns ? `https://avatars.githubusercontent.com/u/44399625?s=200&v=4` : `${WEBUI_API_BASE_URL}/models/model/profile/image?id=${model?.id}&lang=${$i18n.language}`}
+				src={campaigns.length > 0 ? `https://avatars.githubusercontent.com/u/44399625?s=200&v=4` : `${WEBUI_API_BASE_URL}/models/model/profile/image?id=${model?.id}&lang=${$i18n.language}`}
 				className={'size-8 assistant-message-profile-image'}
 			/>
 		</div>
@@ -691,7 +647,7 @@
 			<Name>
 				<Tooltip content={model?.name ?? message.model} placement="top-start">
 					<span id="response-message-model-name" class="line-clamp-1 text-black dark:text-white">
-						{campaigns.length > 0 ? "adjoe" : model?.name ?? message.model}
+						{campaigns.length > 0 ? 'adjoe' : model?.name ?? message.model}
 					</span>
 				</Tooltip>
 
@@ -831,7 +787,7 @@
 						>
 							{#if message.content === '' && !message.error && ((model?.info?.meta?.capabilities?.status_updates ?? true) ? (message?.statusHistory ?? [...(message?.status ? [message?.status] : [])]).length === 0 || (message?.statusHistory?.at(-1)?.hidden ?? false) : true)}
 								<Skeleton />
-							{:else if message.content && message.error !== true && !campaigns}
+							{:else if message.content && message.error !== true && campaigns.length === 0}
 								<!-- always show message contents even if there's an error -->
 								<!-- unless message.error === true which is legacy error handling, where the error message is stored in message.content -->
 								<ContentRenderer
@@ -896,7 +852,7 @@
 					</div>
 				</div>
 
-				{#if !edit && !campaigns}
+				{#if !edit && campaigns.length === 0}
 					<div
 						bind:this={buttonsContainerElement}
 						class="flex justify-start overflow-x-auto buttons text-gray-600 dark:text-gray-500 mt-0.5"
@@ -1516,7 +1472,7 @@
 						</div>
 					{/if}
 				{/if}
-				{#if campaigns}
+				{#if campaigns.length > 0}
 					<div class="mt-2.5">
 						<div class="text-center text-gray-700 dark:text-gray-300 mb-4">
 						You are out of tokens, but don't worry! You can earn more tokens by downloading one of the games below and playing it. Each game has a different token reward, so choose the one that suits you best. Happy gaming!

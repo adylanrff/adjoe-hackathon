@@ -180,10 +180,6 @@ func tokenHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Wrong format for cost", http.StatusBadRequest)
 		return
 	}
-	if cost == 0 {
-		http.Error(w, "Cost parameter is required", http.StatusBadRequest)
-		return
-	}
 
 	mu.Lock()
 	defer mu.Unlock()
@@ -368,6 +364,6 @@ func main() {
 	http.HandleFunc("/check-balance", tokenHandler)
 	http.HandleFunc("/s2s-payout", payoutHandler)
 
-	fmt.Println("Server starting on :8080...")
-	http.ListenAndServe(":8080", nil)
+	fmt.Println("Server starting on :8081...")
+	http.ListenAndServe(":8081", nil)
 }

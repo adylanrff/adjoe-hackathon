@@ -1161,7 +1161,8 @@
 				info: m.info ? m.info : undefined,
 				timestamp: m.timestamp,
 				...(m.usage ? { usage: m.usage } : {}),
-				...(m.sources ? { sources: m.sources } : {})
+				...(m.sources ? { sources: m.sources } : {}),
+				...(m.campaign ? { campaign: m.campaign } : {})
 			})),
 			filter_ids: selectedFilterIds.length > 0 ? selectedFilterIds : undefined,
 			model_item: $models.find((m) => m.id === modelId),
