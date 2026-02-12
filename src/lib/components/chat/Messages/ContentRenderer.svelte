@@ -18,6 +18,7 @@
 
 	export let id;
 	export let content;
+	export let campaigns;
 
 	export let history;
 	export let messageId;
@@ -133,7 +134,8 @@
 	});
 </script>
 
-<div bind:this={contentContainerElement}>
+{#if !campaigns}
+	<div bind:this={contentContainerElement}>
 	<Markdown
 		{id}
 		{content}
@@ -200,6 +202,7 @@
 		}}
 	/>
 </div>
+{/if}
 
 {#if floatingButtons && model}
 	<FloatingButtons

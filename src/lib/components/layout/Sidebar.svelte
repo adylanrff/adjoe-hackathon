@@ -879,7 +879,7 @@
 						id="sidebar-webui-name"
 						class=" self-center font-medium text-gray-850 dark:text-white font-primary"
 					>
-						{$WEBUI_NAME}
+						TEST2
 					</div>
 				</a>
 				<Tooltip

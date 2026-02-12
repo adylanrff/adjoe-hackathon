@@ -112,6 +112,8 @@
 			usage?: unknown;
 		};
 		annotation?: { type: string; rating: number };
+		campaigns?: [{ name: string, id: string, clickUUID: string, image: string, icon: string, }];
+
 	}
 
 	export let chatId = '';
@@ -126,10 +128,13 @@
 		}
 	}
 
+
 	export let siblings;
 
-	export let setInputText: Function = () => {};
-	export let gotoMessage: Function = () => {};
+	export let setInputText: Function = () => {
+	};
+	export let gotoMessage: Function = () => {
+	};
 	export let showPreviousMessage: Function;
 	export let showNextMessage: Function;
 
@@ -190,7 +195,8 @@
 		try {
 			speechSynthesis.cancel();
 			$audioQueue.stop();
-		} catch {}
+		} catch {
+		}
 
 		if (speaking) {
 			speaking = false;
@@ -333,6 +339,32 @@
 
 	let preprocessedDetailsCache = [];
 
+	let campaigns = [{
+		name: 'Candy Crush Saga',
+		id: 'default',
+		clickLink: '',
+		offerwallLink: '',
+		image: 'https://m.media-amazon.com/images/I/81u6jGIbTBL.jpg',
+		maxCoins: 250,
+		icon: 'https://play-lh.googleusercontent.com/JvMhIxuwArVmcMReJQB8PIEB1MIQNMGf9j5i914JtkBrHrA55K-nMUIVlYCa7SXAdHtzLtsycEo6NpXeHFxLwvI'
+	},{
+		name: 'Candy Crush Saga',
+		id: 'default',
+		clickLink: '',
+		offerwallLink: '',
+		image: 'https://m.media-amazon.com/images/I/81u6jGIbTBL.jpg',
+		maxCoins: 250,
+		icon: 'https://play-lh.googleusercontent.com/JvMhIxuwArVmcMReJQB8PIEB1MIQNMGf9j5i914JtkBrHrA55K-nMUIVlYCa7SXAdHtzLtsycEo6NpXeHFxLwvI'
+	},{
+		name: 'Candy Crush Saga',
+		id: 'default',
+		clickLink: '',
+		offerwallLink: '',
+		image: 'https://m.media-amazon.com/images/I/81u6jGIbTBL.jpg',
+		maxCoins: 250,
+		icon: 'https://play-lh.googleusercontent.com/JvMhIxuwArVmcMReJQB8PIEB1MIQNMGf9j5i914JtkBrHrA55K-nMUIVlYCa7SXAdHtzLtsycEo6NpXeHFxLwvI'
+	}];
+
 	function preprocessForEditing(content: string): string {
 		// Replace <details>...</details> with unique ID placeholder
 		const detailsBlocks = [];
@@ -427,10 +459,10 @@
 				model_id: message?.selectedModelId ?? message.model,
 				...(history.messages[message.parentId].childrenIds.length > 1
 					? {
-							sibling_model_ids: history.messages[message.parentId].childrenIds
-								.filter((id) => id !== message.id)
-								.map((id) => history.messages[id]?.selectedModelId ?? history.messages[id].model)
-						}
+						sibling_model_ids: history.messages[message.parentId].childrenIds
+							.filter((id) => id !== message.id)
+							.map((id) => history.messages[id]?.selectedModelId ?? history.messages[id].model)
+					}
 					: {})
 			},
 			meta: {
@@ -619,7 +651,7 @@
 			<Name>
 				<Tooltip content={model?.name ?? message.model} placement="top-start">
 					<span id="response-message-model-name" class="line-clamp-1 text-black dark:text-white">
-						{model?.name ?? message.model}
+						{campaigns.length > 0 ? "adjoe" : model?.name ?? message.model}
 					</span>
 				</Tooltip>
 
@@ -632,10 +664,10 @@
 					>
 						<Tooltip content={dayjs(message.timestamp * 1000).format('LLLL')}>
 							<span class="line-clamp-1"
-								>{$i18n.t(formatDate(message.timestamp * 1000), {
-									LOCALIZED_TIME: dayjs(message.timestamp * 1000).format('LT'),
-									LOCALIZED_DATE: dayjs(message.timestamp * 1000).format('L')
-								})}</span
+							>{$i18n.t(formatDate(message.timestamp * 1000), {
+								LOCALIZED_TIME: dayjs(message.timestamp * 1000).format('LT'),
+								LOCALIZED_DATE: dayjs(message.timestamp * 1000).format('L')
+							})}</span
 							>
 						</Tooltip>
 					</div>
@@ -759,7 +791,7 @@
 						>
 							{#if message.content === '' && !message.error && ((model?.info?.meta?.capabilities?.status_updates ?? true) ? (message?.statusHistory ?? [...(message?.status ? [message?.status] : [])]).length === 0 || (message?.statusHistory?.at(-1)?.hidden ?? false) : true)}
 								<Skeleton />
-							{:else if message.content && message.error !== true}
+							{:else if message.content && message.error !== true && !campaigns}
 								<!-- always show message contents even if there's an error -->
 								<!-- unless message.error === true which is legacy error handling, where the error message is stored in message.content -->
 								<ContentRenderer
@@ -824,7 +856,7 @@
 					</div>
 				</div>
 
-				{#if !edit}
+				{#if !edit && !campaigns}
 					<div
 						bind:this={buttonsContainerElement}
 						class="flex justify-start overflow-x-auto buttons text-gray-600 dark:text-gray-500 mt-0.5"
@@ -1015,25 +1047,25 @@
 													xmlns="http://www.w3.org/2000/svg"
 												>
 													<style>
-														.spinner_S1WN {
-															animation: spinner_MGfb 0.8s linear infinite;
-															animation-delay: -0.8s;
-														}
+                              .spinner_S1WN {
+                                  animation: spinner_MGfb 0.8s linear infinite;
+                                  animation-delay: -0.8s;
+                              }
 
-														.spinner_Km9P {
-															animation-delay: -0.65s;
-														}
+                              .spinner_Km9P {
+                                  animation-delay: -0.65s;
+                              }
 
-														.spinner_JApP {
-															animation-delay: -0.5s;
-														}
+                              .spinner_JApP {
+                                  animation-delay: -0.5s;
+                              }
 
-														@keyframes spinner_MGfb {
-															93.75%,
-															100% {
-																opacity: 0.2;
-															}
-														}
+                              @keyframes spinner_MGfb {
+                                  93.75%,
+                                  100% {
+                                      opacity: 0.2;
+                                  }
+                              }
 													</style>
 													<circle class="spinner_S1WN" cx="4" cy="12" r="3" />
 													<circle class="spinner_S1WN spinner_Km9P" cx="12" cy="12" r="3" />
@@ -1444,18 +1476,81 @@
 						</div>
 					{/if}
 				{/if}
+				{#if campaigns}
+					<div class="mt-2.5">
+						{#each campaigns as campaign}
+							<div
+								class="border rounded-2xl p-5 mb-4 flex flex-col items-center bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 shadow-lg w-120 mx-auto">
+								<div class="flex flex-col items-center w-full">
+									<!-- ICON and Name -->
+									<div class="flex items-center mb-3 w-full justify-center">
+										<!-- Example icon, replace with campaign.icon if available -->
+										<span
+											class="inline-flex items-center justify-center bg-gray-200 dark:bg-gray-700 rounded-full w-10 h-10 mr-2">
+		{#if campaign.icon}
+	<svg fill="none" stroke="currentColor" stroke-width="2"
+			 viewBox="0 0 24 24">
+		<image href={campaign.icon} width="24" height="24" />
+	</svg>
+{:else}
+	<svg class="w-6 h-6 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" stroke-width="2"
+			 viewBox="0 0 24 24">
+		<path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+	</svg>
+{/if}
+			</span>
+										<span class="font-bold text-lg text-gray-900 dark:text-white">{campaign.name}</span>
+									</div>
+									<!-- Picture -->
+									{#if campaign.image}
+										<img src={campaign.image} alt={campaign.name}
+												 class="w-100 h-50 rounded-xl object-cover mb-3 border-2 border-gray-200 dark:border-gray-700 shadow" />
+									{/if}
+									<!-- Max Coins -->
+									<div class="flex items-center mb-4">
+			<span
+				class="inline-flex items-center px-3 py-1 bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 rounded-full font-semibold text-sm shadow">
+				<svg class="w-4 h-4 mr-1 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+					<path d="M10 15.27L16.18 18l-1.64-7.03L20 7.24l-7.19-.61L10 0 7.19 6.63 0 7.24l5.46 3.73L3.82 18z" />
+				</svg>
+				{$i18n.t('Max Tokens')}: {campaign.maxCoins}
+			</span>
+
+									</div>
+									<a
+										href={campaign.offerwallLink}
+										target="_blank"
+										rel="noopener noreferrer"
+										class="ml-3 mb-3 text-blue-600 dark:text-blue-400 underline hover:no-underline font-medium"
+									>
+										{$i18n.t('Show Details')}
+									</a>
+									<!-- Click Button -->
+									<button
+										class="w-full px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-xl shadow transition duration-150 ease-in-out"
+										on:click={() => {
+				window.open(campaign.clickLink, '_blank');
+			}}
+									>
+										{$i18n.t('Play Now')}
+									</button>
+								</div>
+							</div>
+						{/each}
+					</div>
+				{/if}
 			</div>
 		</div>
 	</div>
 {/key}
 
 <style>
-	.buttons::-webkit-scrollbar {
-		display: none; /* for Chrome, Safari and Opera */
-	}
+    .buttons::-webkit-scrollbar {
+        display: none; /* for Chrome, Safari and Opera */
+    }
 
-	.buttons {
-		-ms-overflow-style: none; /* IE and Edge */
-		scrollbar-width: none; /* Firefox */
-	}
+    .buttons {
+        -ms-overflow-style: none; /* IE and Edge */
+        scrollbar-width: none; /* Firefox */
+    }
 </style>
