@@ -339,30 +339,70 @@
 
 	let preprocessedDetailsCache = [];
 
+	let flipped = {};
+
 	let campaigns = [{
 		name: 'Candy Crush Saga',
-		id: 'default',
+		id: 'candy-crush-1',
 		clickLink: '',
-		offerwallLink: '',
+		boostFactor: 2,
+		offerwallLink: 'https://adylanios.webofferwall.sb2.mainsb2.com/play?user_id=123123',
 		image: 'https://m.media-amazon.com/images/I/81u6jGIbTBL.jpg',
 		maxCoins: 250,
-		icon: 'https://play-lh.googleusercontent.com/JvMhIxuwArVmcMReJQB8PIEB1MIQNMGf9j5i914JtkBrHrA55K-nMUIVlYCa7SXAdHtzLtsycEo6NpXeHFxLwvI'
+		icon: 'https://play-lh.googleusercontent.com/JvMhIxuwArVmcMReJQB8PIEB1MIQNMGf9j5i914JtkBrHrA55K-nMUIVlYCa7SXAdHtzLtsycEo6NpXeHFxLwvI',
+		description: 'Switch and match Candies in this tasty puzzle adventure to progress to the next level for that sweet winning feeling! Solve puzzles with quick thinking and smart moves, and be rewarded with delicious Rainbow-Colored Cascades and tasty Candy combos!',
+		events: [
+			{ name: 'Install and Open', reward: 10 },
+			{ name: 'Reach Level 20', reward: 40 },
+			{ name: 'Reach Level 50', reward: 100 },
+			{ name: 'Reach Level 100', reward: 200 },
+			{ name: 'Make a Purchase', reward: 200 }
+		],
+		bonusEvents: [
+			{ name: 'First Purchase Bonus', reward: 500 },
+			{ name: 'Reach Level 250', reward: 1000 }
+		],
+		cashback: { coins: 50, currency: '$' }
 	},{
 		name: 'Candy Crush Saga',
-		id: 'default',
+		id: 'candy-crush-2',
 		clickLink: '',
-		offerwallLink: '',
+		offerwallLink: 'https://adylanios.webofferwall.sb2.mainsb2.com/play?user_id=123123',
 		image: 'https://m.media-amazon.com/images/I/81u6jGIbTBL.jpg',
 		maxCoins: 250,
-		icon: 'https://play-lh.googleusercontent.com/JvMhIxuwArVmcMReJQB8PIEB1MIQNMGf9j5i914JtkBrHrA55K-nMUIVlYCa7SXAdHtzLtsycEo6NpXeHFxLwvI'
+		icon: 'https://play-lh.googleusercontent.com/JvMhIxuwArVmcMReJQB8PIEB1MIQNMGf9j5i914JtkBrHrA55K-nMUIVlYCa7SXAdHtzLtsycEo6NpXeHFxLwvI',
+		description: 'Switch and match Candies in this tasty puzzle adventure to progress to the next level for that sweet winning feeling! Solve puzzles with quick thinking and smart moves, and be rewarded with delicious Rainbow-Colored Cascades and tasty Candy combos!',
+		events: [
+			{ name: 'Install and Open', reward: 10 },
+			{ name: 'Reach Level 20', reward: 40 },
+			{ name: 'Make a Purchase', reward: 200 }
+		]
+	},{
+		clickLink: '',
+		offerwallLink: 'https://adylanios.webofferwall.sb2.mainsb2.com/play?user_id=123123',
+		image: 'https://m.media-amazon.com/images/I/81u6jGIbTBL.jpg',
+		maxCoins: 250,
+		icon: 'https://play-lh.googleusercontent.com/JvMhIxuwArVmcMReJQB8PIEB1MIQNMGf9j5i914JtkBrHrA55K-nMUIVlYCa7SXAdHtzLtsycEo6NpXeHFxLwvI',
+		description: 'Switch and match Candies in this tasty puzzle adventure to progress to the next level for that sweet winning feeling! Solve puzzles with quick thinking and smart moves, and be rewarded with delicious Rainbow-Colored Cascades and tasty Candy combos!',
+		events: [
+			{ name: 'Install and Open', reward: 10 },
+			{ name: 'Reach Level 20', reward: 40 },
+			{ name: 'Make a Purchase', reward: 200 }
+		]
 	},{
 		name: 'Candy Crush Saga',
-		id: 'default',
+		id: 'candy-crush-3',
 		clickLink: '',
-		offerwallLink: '',
+		offerwallLink: 'https://adylanios.webofferwall.sb2.mainsb2.com/play?user_id=123123',
 		image: 'https://m.media-amazon.com/images/I/81u6jGIbTBL.jpg',
 		maxCoins: 250,
-		icon: 'https://play-lh.googleusercontent.com/JvMhIxuwArVmcMReJQB8PIEB1MIQNMGf9j5i914JtkBrHrA55K-nMUIVlYCa7SXAdHtzLtsycEo6NpXeHFxLwvI'
+		icon: 'https://play-lh.googleusercontent.com/JvMhIxuwArVmcMReJQB8PIEB1MIQNMGf9j5i914JtkBrHrA55K-nMUIVlYCa7SXAdHtzLtsycEo6NpXeHFxLwvI',
+		description: 'Switch and match Candies in this tasty puzzle adventure to progress to the next level for that sweet winning feeling! Solve puzzles with quick thinking and smart moves, and be rewarded with delicious Rainbow-Colored Cascades and tasty Candy combos!',
+		events: [
+			{ name: 'Install and Open', reward: 10 },
+			{ name: 'Reach Level 20', reward: 40 },
+			{ name: 'Make a Purchase', reward: 200 }
+		]
 	}];
 
 	function preprocessForEditing(content: string): string {
@@ -1483,64 +1523,131 @@
 						</div>
 						<div class="flex flex-wrap justify-center gap-4" >
 							{#each campaigns as campaign}
-							<div
-								class="border rounded-2xl p-5 mb-4 flex flex-row items-left bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 shadow-lg w-90 mx-3">
-								<div class="flex flex-col items-center w-full">
-									<!-- ICON and Name -->
-									<div class="flex items-center mb-3 w-full justify-center">
-										<!-- Example icon, replace with campaign.icon if available -->
-										<span
-											class="inline-flex items-center justify-center bg-gray-200 dark:bg-gray-700 rounded-full w-10 h-10 mr-2">
-		{#if campaign.icon}
-	<svg fill="none" stroke="currentColor" stroke-width="2"
-			 viewBox="0 0 24 24">
-		<image href={campaign.icon} width="24" height="24" />
-	</svg>
-{:else}
-	<svg class="w-6 h-6 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" stroke-width="2"
-			 viewBox="0 0 24 24">
-		<path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-	</svg>
-{/if}
-			</span>
-										<span class="font-bold text-lg text-gray-900 dark:text-white">{campaign.name}</span>
-									</div>
-									<!-- Picture -->
-									{#if campaign.image}
-										<img src={campaign.image} alt={campaign.name}
-												 class="w-100 h-50 rounded-xl object-cover mb-3 border-2 border-gray-200 dark:border-gray-700 shadow" />
-									{/if}
-									<!-- Max Coins -->
-									<div class="flex items-center mb-4">
-			<span
-				class="inline-flex items-center px-3 py-1 bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 rounded-full font-semibold text-sm shadow">
-				<svg class="w-4 h-4 mr-1 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
-					<path d="M10 15.27L16.18 18l-1.64-7.03L20 7.24l-7.19-.61L10 0 7.19 6.63 0 7.24l5.46 3.73L3.82 18z" />
-				</svg>
-				{$i18n.t('Max Tokens')}: {campaign.maxCoins}
-			</span>
+								<div class="campaign-card-container w-90 mx-3 h-[450px]">
+									<div class="campaign-card {flipped[campaign.id] ? 'flipped' : ''}">
+										<!-- Front -->
+										<div class="campaign-card-front border-2 rounded-2xl p-5 flex flex-col items-center bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 shadow-lg absolute w-full h-full backface-hidden {(campaign.boostFactor || 1) > 1 ? 'border-yellow-500 dark:border-yellow-500 shadow-xl shadow-yellow-200 dark:shadow-yellow-900/30' : 'border-gray-200 dark:border-gray-700'}">
+											<div class="flex items-center mb-3 w-full justify-center">
+												<span class="inline-flex items-center justify-center bg-gray-200 dark:bg-gray-700 rounded-full w-10 h-10 mr-2">
+													{#if campaign.icon}
+														<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+															<image href={campaign.icon} width="24" height="24" />
+														</svg>
+													{:else}
+														<svg class="w-6 h-6 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+															<path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+														</svg>
+													{/if}
+												</span>
+												<span class="font-bold text-lg text-gray-900 dark:text-white">{campaign.name}</span>
+											</div>
 
+											{#if campaign.image}
+												<div class="relative w-full h-40 mb-3">
+													<img src={campaign.image} alt={campaign.name} class="w-full h-full rounded-xl object-cover border-2 border-gray-200 dark:border-gray-700 shadow" />
+													{#if (campaign.boostFactor || 1) > 1}
+														<div class="absolute top-2 right-2 bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-xl shadow-yellow-500/50 animate-pulse border-2 border-white dark:border-gray-800 z-10">
+															{campaign.boostFactor}x {$i18n.t('Boost')}
+														</div>
+													{/if}
+												</div>
+											{:else}
+												<!-- Placeholder for layout consistency if image is missing, though previous logic only showed if image existed -->
+											{/if}
+
+											<div class="flex items-center mb-4 flex-wrap gap-2 justify-center">
+												<span class="inline-flex items-center px-3 py-1 bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 rounded-full font-semibold text-sm shadow">
+													<svg class="w-4 h-4 mr-1 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+														<path d="M10 15.27L16.18 18l-1.64-7.03L20 7.24l-7.19-.61L10 0 7.19 6.63 0 7.24l5.46 3.73L3.82 18z" />
+													</svg>
+													{$i18n.t('Max Tokens')}: {campaign.maxCoins * (campaign.boostFactor || 1)}
+												</span>
+												{#if campaign.cashback}
+													<span class="inline-flex items-center px-3 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full font-semibold text-sm shadow">
+														<svg class="w-4 h-4 mr-1 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+															<path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+														</svg>
+														{campaign.cashback.coins * (campaign.boostFactor || 1)} Tokens / {campaign.cashback.currency}
+													</span>
+												{/if}
+											</div>
+
+											<button
+												class="ml-3 mb-3 text-blue-600 dark:text-blue-400 underline hover:no-underline font-medium"
+												on:click={() => { flipped[campaign.id] = true; flipped = flipped; }}
+											>
+												{$i18n.t('Show Details')}
+											</button>
+
+											<button
+												class="w-full px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-xl shadow transition duration-150 ease-in-out mt-auto"
+												on:click={() => { window.open(campaign.clickLink, '_blank'); }}
+											>
+												{$i18n.t('Play Now')}
+											</button>
+										</div>
+
+										<!-- Back -->
+										<div class="campaign-card-back border-2 rounded-2xl p-5 flex flex-col bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 shadow-lg absolute w-full h-full backface-hidden rotate-y-180 overflow-y-auto {(campaign.boostFactor || 1) > 1 ? 'border-yellow-500 dark:border-yellow-500 shadow-xl shadow-yellow-200 dark:shadow-yellow-900/30' : 'border-gray-200 dark:border-gray-700'}">
+											<div class="flex justify-between items-center mb-2 shrink-0">
+												<h3 class="font-bold text-lg text-gray-900 dark:text-white">{$i18n.t('Details')}</h3>
+												<button class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300" on:click={() => { flipped[campaign.id] = false; flipped = flipped; }}>
+													<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+  														<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+													</svg>
+												</button>
+											</div>
+
+											<div class="flex-1 overflow-y-auto pr-1">
+												<p class="text-sm text-gray-600 dark:text-gray-300 mb-4">{campaign.description}</p>
+
+												{#if campaign.cashback}
+													<div class="mb-4 p-3 bg-green-50 dark:bg-green-900/30 rounded-xl border border-green-100 dark:border-green-800">
+														<h4 class="font-semibold text-green-900 dark:text-green-100 mb-1 flex items-center">
+															<svg class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+																<path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+															</svg>
+															{$i18n.t('Cashback')}
+														</h4>
+														<p class="text-xs text-green-800 dark:text-green-200">
+															Earn <span class="font-bold">{campaign.cashback.coins * (campaign.boostFactor || 1)} Tokens</span> for every <span class="font-bold">{campaign.cashback.currency}</span> spent!
+														</p>
+													</div>
+												{/if}
+
+												<h4 class="font-semibold text-gray-900 dark:text-white mb-2 sticky top-0 bg-inherit z-10">{$i18n.t('Events')}</h4>
+												<ul class="text-sm text-gray-600 dark:text-gray-300 space-y-2 mb-4">
+													{#each campaign.events as event}
+														<li class="flex justify-between items-center bg-white/50 dark:bg-black/20 p-2 rounded-lg">
+															<span class="flex-1 mr-2">{event.name}</span>
+															<span class="font-medium text-yellow-600 dark:text-yellow-400 whitespace-nowrap">+{event.reward * (campaign.boostFactor || 1)} Tokens</span>
+														</li>
+													{/each}
+												</ul>
+
+												{#if campaign.bonusEvents && campaign.bonusEvents.length > 0}
+													<h4 class="font-semibold text-purple-900 dark:text-purple-300 mb-2 sticky top-0 bg-inherit z-10 mt-4">{$i18n.t('Bonus Events')}</h4>
+													<ul class="text-sm text-gray-600 dark:text-gray-300 space-y-2 mb-4">
+														{#each campaign.bonusEvents as event}
+															<li class="flex justify-between items-center bg-purple-50 dark:bg-purple-900/20 p-2 rounded-lg border border-purple-100 dark:border-purple-800">
+																<span class="flex-1 mr-2 text-purple-800 dark:text-purple-200">{event.name}</span>
+																<span class="font-bold text-yellow-600 dark:text-yellow-400 whitespace-nowrap">+{event.reward * (campaign.boostFactor || 1)} Tokens</span>
+															</li>
+														{/each}
+													</ul>
+												{/if}
+											</div>
+
+											<button
+												class="w-full px-4 py-2 bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white font-semibold rounded-xl shadow transition duration-150 ease-in-out shrink-0 mt-2"
+												on:click={() => { window.open(campaign.offerwallLink, '_blank'); }}
+											>
+												{$i18n.t('Show in Offerwall')}
+											</button>
+										</div>
 									</div>
-									<a
-										href={campaign.offerwallLink}
-										target="_blank"
-										rel="noopener noreferrer"
-										class="ml-3 mb-3 text-blue-600 dark:text-blue-400 underline hover:no-underline font-medium"
-									>
-										{$i18n.t('Show Details')}
-									</a>
-									<!-- Click Button -->
-									<button
-										class="w-full px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-xl shadow transition duration-150 ease-in-out"
-										on:click={() => {
-				window.open(campaign.clickLink, '_blank');
-			}}
-									>
-										{$i18n.t('Play Now')}
-									</button>
 								</div>
-							</div>
-						{/each}
+							{/each}
 						</div>
 					</div>
 				{/if}
@@ -1557,5 +1664,31 @@
     .buttons {
         -ms-overflow-style: none; /* IE and Edge */
         scrollbar-width: none; /* Firefox */
+    }
+
+    .campaign-card-container {
+        perspective: 1000px;
+    }
+
+    .campaign-card {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        transition: transform 0.6s;
+        transform-style: preserve-3d;
+    }
+
+    .campaign-card.flipped {
+        transform: rotateY(180deg);
+    }
+
+    .backface-hidden {
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+    }
+
+    .rotate-y-180 {
+        transform: rotateY(180deg);
     }
 </style>

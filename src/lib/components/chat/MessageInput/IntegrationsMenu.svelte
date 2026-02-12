@@ -92,6 +92,7 @@
 	};
 </script>
 
+<div class="flex items-center gap-2">
 <Dropdown
 	bind:show
 	on:change={(e) => {
@@ -402,3 +403,13 @@
 		</DropdownMenu.Content>
 	</div>
 </Dropdown>
+	<Tooltip content={$i18n.t('Go to the adjoe Offerwall')} placement="top">
+		<img
+			src={"https://avatars.githubusercontent.com/u/44399625?s=200&v=4"}
+			class=" size-5 @sm:size-5 rounded-full border-[1px] border-gray-100 dark:border-none cursor-pointer hover:border-gray-300 dark:hover:border-gray-600 transition-colors"
+			aria-hidden="true"
+			draggable="false"
+			on:click={() => window.open('https://adylanios.webofferwall.sb2.mainsb2.com/play?user_id=123123', '_blank')}
+		/>
+	</Tooltip>
+</div>
