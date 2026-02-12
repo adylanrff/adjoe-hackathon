@@ -44,11 +44,11 @@ type CampaignDetail struct {
 	Promotion              *Promotion        `json:",omitempty"`
 }
 type Promotion struct {
-	Name        string     `json:",omitempty"`
-	Description string     `json:",omitempty"`
-	BoostFactor float32    `json:",omitempty"`
-	StartAt     *time.Time `json:",omitempty"`
-	StopAt      *time.Time `json:",omitempty"`
+	Factor      float64   `json:"Factor"`
+	Label       string    `json:"Label"`
+	Description string    `json:"Description"`
+	StartsAt    time.Time `json:"StartsAt"`
+	EndsAt      time.Time `json:"EndsAt"`
 }
 
 type CashbackSDKConfig struct {
@@ -82,7 +82,7 @@ type EventConfigs struct {
 	} `json:"AdvancePlus"`
 }
 type PayoutRequest struct {
-	Tokens int `json:"cost"`
+	Tokens int `json:"tokens" form:"tokens" query:"tokens"`
 }
 
 type TokenResponse struct {
@@ -141,7 +141,7 @@ type Offer struct {
 	Description    string            `json:"Description"`
 	EventConfigs   EventConfigs      `json:"EventConfigs"`
 	CashbackConfig CashbackSDKConfig `json:"CashbackSDKConfig"`
-	Promotion      *Promotion        `json:",omitempty"`
+	Promotion      *Promotion        `json:"Promotion,omitempty"`
 }
 
 type OffersResponse struct {
@@ -200,7 +200,7 @@ func tokenHandler(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("Insufficient balance.")
 	fmt.Println("Fetching campaigns.")
-	offers, err := fetchOffers(initData)
+	offers, err := getOffers(initData)
 	if err != nil {
 		fmt.Println("Failed fetching offers" + err.Error())
 		return
@@ -211,7 +211,7 @@ func tokenHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(offers)
 }
 
-func fetchOffers(initData *InitResponse) (*OffersResponse, error) {
+func getOffers(initData *InitResponse) (*OffersResponse, error) {
 	// 1. Build the base URL
 	baseURL := fmt.Sprintf("https://sb2.mainsb2.com:443/v1/studio-sdk/user/%s/offers",
 		initData.ExternalUserID,
@@ -289,10 +289,10 @@ func processCampaignDetails(offers *OffersResponse, sdkHash, userUUID string) {
 			offer.CashbackConfig = c.CashbackConfig
 			offer.Description = c.Description
 			offer.EventConfigs = c.EventConfigs
-			offer.Promotion = c.Promotion
 		}
 	}
 }
+
 func initializeUser() (*InitResponse, error) {
 	initURL := "https://sb2.mainsb2.com:443/v2/user-management/public/app/" + SDKHash + "/init"
 	externalUserID = uuid.NewString()
@@ -355,8 +355,13 @@ func payoutHandler(w http.ResponseWriter, r *http.Request) {
 	payoutRequest := &PayoutRequest{}
 	err := json.NewDecoder(r.Body).Decode(payoutRequest)
 	if err != nil {
-
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
 	}
+	fmt.Println("processing payout request for tokens:", payoutRequest.Tokens)
+	tokenBalance += payoutRequest.Tokens
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(TokenResponse{Tokens: tokenBalance})
 }
 
 func main() {
