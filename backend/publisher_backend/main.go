@@ -154,6 +154,7 @@ type Offer struct {
 type OffersResponse struct {
 	Offers []*Offer `json:"Offers"`
 	TokenResponse
+	ExternalUserID string `json:"ExternalUserID,omitempty"`
 }
 
 var (
@@ -210,7 +211,7 @@ func tokenHandler(w http.ResponseWriter, r *http.Request) {
 	tokenBalance = int(math.Max(0, float64(tokenBalance-cost)))
 
 	response.Tokens = tokenBalance
-
+	response.ExternalUserID = externalUserID
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
 }
@@ -251,7 +252,7 @@ func getOffers(initData *InitResponse) (*OffersResponse, error) {
 
 	// ... after client.Do(req) ...
 	bodyBytes, _ := io.ReadAll(resp.Body)
-	//fmt.Println("Debug", string(bodyBytes))
+	fmt.Println("Debug", string(bodyBytes))
 	// Re-open the body for the JSON decoder since we just read it
 	resp.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
 
