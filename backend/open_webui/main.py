@@ -1441,6 +1441,15 @@ app.include_router(
 )
 app.include_router(utils.router, prefix="/api/v1/utils", tags=["utils"])
 
+
+@app.get("/api/v1/balance")
+async def get_token_balance():
+    from open_webui.utils.balance import get_balance_and_campaign
+
+    token_balance, _ = get_balance_and_campaign(0)
+    return {"tokenBalance": token_balance if token_balance is not None else 0}
+
+
 # SCIM 2.0 API for identity management
 if ENABLE_SCIM:
     app.include_router(scim.router, prefix="/api/v1/scim/v2", tags=["scim"])
