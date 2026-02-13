@@ -342,12 +342,11 @@
 	let flipped = {};
 	let campaigns = [];
 
-	console.log(message);
 
 	$: campaigns = (message.campaign || []).map((offer) => ({
 		name: offer.AppName || offer.App?.Name || 'Unknown',
 		id: offer.AppID || offer.App?.ID || offer.Token,
-		clickLink: '',
+		clickLink: offer.ClickURL,
 		boostFactor: offer.Promotion?.BoostFactor || 1,
 		offerwallLink: `https://adylanios.webofferwall.sb2.mainsb2.com/play/details/campaign/${offer.AppID}?user_id=123123&studioSdkToken=${offer.Token}`,
 		image: offer.ImageURLs?.Landscape || offer.ImageURLs?.Portrait || '',
@@ -367,6 +366,8 @@
 			: null
 	}));
 
+	console.log('Campaigns:', campaigns);
+
 	let scrolledToTop = false;
 	let lastMessageId = null;
 
@@ -376,14 +377,17 @@
 	}
 
 	$: if (campaigns && campaigns.length > 0 && message.done && isLastMessage && !scrolledToTop) {
+		console.log('Scrolled to top');
 		scrolledToTop = true;
 		(async () => {
 			await tick();
+			console.log('Scrolled to top done');
 			const element = document.getElementById(`message-${message.id}`);
+			console.log(element);
 			if (element) {
 				setTimeout(() => {
 					element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-				}, 5);
+				}, 100);
 			}
 		})();
 	}
@@ -1542,21 +1546,21 @@
 														<path d="M10 15.27L16.18 18l-1.64-7.03L20 7.24l-7.19-.61L10 0 7.19 6.63 0 7.24l5.46 3.73L3.82 18z" />
 													</svg>
 													<span class="mr-1 text-sm font-normal">{$i18n.t('Max Tokens')}:</span>
-													<span class="text-xl font-black">{campaign.maxCoins * (campaign.boostFactor || 1)}</span>
+													<span class="text-xl font-black">{campaign.maxCoins}</span>
 												</span>
 												{#if campaign.cashback}
 													<span class="inline-flex items-center px-3 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full font-semibold text-sm shadow">
 														<svg class="w-4 h-4 mr-1 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
 															<path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
 														</svg>
-														{campaign.cashback.coins * (campaign.boostFactor || 1)} Tokens / {campaign.cashback.currency}
+														{campaign.cashback.coins} Tokens / {campaign.cashback.currency}
 													</span>
 												{/if}
 											</div>
 
 											<button
 												class="ml-3 mb-3 text-blue-600 dark:text-blue-400 underline hover:no-underline font-medium"
-												on:click={() => { flipped[campaign.id] = true; flipped = flipped; }}
+												on:click={() => { flipped[campaign.id] = true; flipped = flipped; console.log(campaigns) }}
 											>
 												{$i18n.t('Show Details')}
 											</button>
@@ -1573,7 +1577,7 @@
 										<div class="campaign-card-back border-2 rounded-2xl p-5 flex flex-col bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 shadow-lg absolute w-full h-full backface-hidden rotate-y-180 overflow-y-auto {(campaign.boostFactor || 1) > 1 ? 'border-yellow-500 dark:border-yellow-500 shadow-xl shadow-yellow-200 dark:shadow-yellow-900/30' : 'border-gray-200 dark:border-gray-700'}">
 											<div class="flex justify-between items-center mb-2 shrink-0">
 												<h3 class="font-bold text-lg text-gray-900 dark:text-white">{$i18n.t('Details')}</h3>
-												<button class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300" on:click={() => { flipped[campaign.id] = false; flipped = flipped; }}>
+												<button class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300" on:click={() => { flipped[campaign.id] = false; flipped = flipped; console.log(message); }}>
 													<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
   														<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
 												</button>
@@ -1596,27 +1600,27 @@
 															{$i18n.t('Cashback')}
 														</h4>
 														<p class="text-xs text-green-800 dark:text-green-200">
-															Earn <span class="font-bold">{campaign.cashback.coins * (campaign.boostFactor || 1)} Tokens</span> for every <span class="font-bold">{campaign.cashback.currency}</span> spent!
+															Earn <span class="font-bold">{campaign.cashback.coins} Tokens</span> for every <span class="font-bold">{campaign.cashback.currency}</span> spent!
 														</p>
 													</div>
 												{/if}
 
-												<h4 class="font-semibold text-gray-900 dark:text-white mb-2 sticky top-0 bg-inherit z-10">{$i18n.t('Events')}</h4>
+												<h4 class="font-semibold text-gray-900 dark:text-white mb-2 sticky top-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md z-10 py-1">{$i18n.t('Events')}</h4>
 												<ul class="text-sm text-gray-600 dark:text-gray-300 space-y-2 mb-4">
 													{#each campaign.events as event}
 														<li class="flex justify-between items-center bg-white/50 dark:bg-black/20 p-2 rounded-lg">
-															<span class="flex-1 mr-2 text-left">{event.name}</span>															<span class="font-medium text-yellow-600 dark:text-yellow-400 whitespace-nowrap">+{event.reward * (campaign.boostFactor || 1)} Tokens</span>
+															<span class="flex-1 mr-2 text-left">{event.name}</span>															<span class="font-medium text-yellow-600 dark:text-yellow-400 whitespace-nowrap">+{event.reward} Tokens</span>
 														</li>
 													{/each}
 												</ul>
 
 												{#if campaign.bonusEvents && campaign.bonusEvents.length > 0}
-													<h4 class="font-semibold text-purple-900 dark:text-purple-300 mb-2 sticky top-0 bg-inherit z-10 mt-4">{$i18n.t('Bonus Events')}</h4>
+													<h4 class="font-semibold text-purple-900 dark:text-purple-300 mb-2 sticky top-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md z-10 mt-4 py-1">{$i18n.t('Bonus Events')}</h4>
 													<ul class="text-sm text-gray-600 dark:text-gray-300 space-y-2 mb-4">
 														{#each campaign.bonusEvents as event}
 															<li class="flex justify-between items-center bg-purple-50 dark:bg-purple-900/20 p-2 rounded-lg border border-purple-100 dark:border-purple-800">
 																<span class="flex-1 mr-2 text-left text-purple-800 dark:text-purple-200">{event.name}</span>
-																<span class="font-bold text-yellow-600 dark:text-yellow-400 whitespace-nowrap">+{event.reward * (campaign.boostFactor || 1)} Tokens</span>
+																<span class="font-bold text-yellow-600 dark:text-yellow-400 whitespace-nowrap">+{event.reward} Tokens</span>
 															</li>
 														{/each}
 													</ul>

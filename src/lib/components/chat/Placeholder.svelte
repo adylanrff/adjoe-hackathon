@@ -144,7 +144,7 @@
 								className=" flex items-center "
 							>
 								<span class="line-clamp-1">
-									{models[selectedModelIdx]?.name}
+									Play to Chat
 								</span>
 							</Tooltip>
 						{:else}
