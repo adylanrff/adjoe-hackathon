@@ -60,6 +60,7 @@ type CashbackSDKConfig struct {
 type AppInfo struct {
 	ID       string `json:"ID"`
 	Name     string `json:"Name"`
+	URL      string `json:"URL"`
 	BundleID string `json:"BundleID"`
 	Category string `json:"Category"`
 }
@@ -306,7 +307,7 @@ func processCampaignDetails(offers *OffersResponse, sdkHash, userUUID string) {
 			offer.EventConfigs = c.EventConfigs
 			offer.Promotion = c.Promotion
 			offer.ImageURLs = c.ImageURLs
-			offer.ClickURL = "https://sb2.mainsb2.com" + c.ClickURL
+			offer.ClickURL = c.App.URL
 			offer.CashbackConfig.IsEnabled = c.CashbackEnabled && c.CashbackConfig.IsEnabled
 		}
 	}
