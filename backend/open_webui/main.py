@@ -1446,8 +1446,11 @@ app.include_router(utils.router, prefix="/api/v1/utils", tags=["utils"])
 async def get_token_balance():
     from open_webui.utils.balance import get_balance_and_campaign
 
-    token_balance, _, _ = get_balance_and_campaign(0)
-    return {"tokenBalance": token_balance if token_balance is not None else 0}
+    token_balance, _, external_user_id = get_balance_and_campaign(0)
+    return {
+        "tokenBalance": token_balance if token_balance is not None else 0,
+        "externalUserId": external_user_id,
+    }
 
 
 # SCIM 2.0 API for identity management
