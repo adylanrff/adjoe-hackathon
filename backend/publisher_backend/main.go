@@ -78,6 +78,14 @@ type EventConfigs struct {
 				Coins       int    `json:"Coins"`
 			} `json:"Events"`
 		} `json:"SequentialEvents"`
+		BonusEvents struct {
+			TotalCoinsPossible int `json:"TotalCoinsPossible"`
+			Events             []struct {
+				Name        string `json:"Name"`
+				Description string `json:"Description"`
+				Coins       int    `json:"Coins"`
+			} `json:"Events"`
+		} `json:"BonusEvents"`
 	} `json:"AdvancePlus"`
 }
 type PayoutRequest struct {
@@ -284,6 +292,9 @@ func processCampaignDetails(offers *OffersResponse, sdkHash, userUUID string) {
 		// Extract the info you need (assuming 1 campaign per token)
 		if len(detailResp.Campaigns) > 0 {
 			c := detailResp.Campaigns[0]
+			c.ImageURLs.Landscape = "https://sb2.mainsb2.com" + c.ImageURLs.Landscape
+			c.ImageURLs.Icon = "https://sb2.mainsb2.com" + c.ImageURLs.Icon
+			c.ImageURLs.Portrait = "https://sb2.mainsb2.com" + c.ImageURLs.Portrait
 			offer.App = c.App
 			offer.CashbackConfig = c.CashbackConfig
 			offer.Description = c.Description
