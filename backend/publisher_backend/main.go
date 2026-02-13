@@ -43,6 +43,8 @@ type CampaignDetail struct {
 	EventConfigs           EventConfigs      `json:"EventConfigs"`
 	CashbackConfig         CashbackSDKConfig `json:"CashbackSDKConfig"`
 	Promotion              *Promotion        `json:",omitempty"`
+	ClickURL               string            `json:"ClickURL"`
+	CashbackEnabled        bool              `json:"CashbackEnabled"`
 }
 type Promotion struct {
 	Factor   float64   `json:"BoostFactor"`
@@ -143,6 +145,7 @@ type Offer struct {
 	Token          string            `json:"Token"`
 	IsRecommended  bool              `json:"IsRecommended"`
 	ImageURLs      CreativeURLs      `json:"ImageURLs"`
+	ClickURL       string            `json:"ClickURL"`
 	VideoURLs      CreativeURLs      `json:"VideoURLs"`
 	App            AppInfo           `json:"App"`
 	Description    string            `json:"Description"`
@@ -252,7 +255,7 @@ func getOffers(initData *InitResponse) (*OffersResponse, error) {
 
 	// ... after client.Do(req) ...
 	bodyBytes, _ := io.ReadAll(resp.Body)
-	fmt.Println("Debug", string(bodyBytes))
+	//fmt.Println("Debug", string(bodyBytes))
 	// Re-open the body for the JSON decoder since we just read it
 	resp.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
 
@@ -283,7 +286,8 @@ func processCampaignDetails(offers *OffersResponse, sdkHash, userUUID string) {
 			continue
 		}
 		defer resp.Body.Close()
-
+		//str, _ := io.ReadAll(resp.Body)
+		//fmt.Println("Debug", string(str))
 		var detailResp CampaignDetailsResponse
 		if err := json.NewDecoder(resp.Body).Decode(&detailResp); err != nil {
 			fmt.Println("Decode error:", err)
@@ -302,6 +306,8 @@ func processCampaignDetails(offers *OffersResponse, sdkHash, userUUID string) {
 			offer.EventConfigs = c.EventConfigs
 			offer.Promotion = c.Promotion
 			offer.ImageURLs = c.ImageURLs
+			offer.ClickURL = "https://sb2.mainsb2.com" + c.ClickURL
+			offer.CashbackConfig.IsEnabled = c.CashbackEnabled && c.CashbackConfig.IsEnabled
 		}
 	}
 }
