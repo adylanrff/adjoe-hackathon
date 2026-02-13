@@ -146,6 +146,7 @@ type Offer struct {
 
 type OffersResponse struct {
 	Offers []*Offer `json:"Offers"`
+	TokenResponse
 }
 
 var (
@@ -184,27 +185,28 @@ func tokenHandler(w http.ResponseWriter, r *http.Request) {
 	mu.Lock()
 	defer mu.Unlock()
 
-	// 3. Check if balance is sufficient
-	if tokenBalance >= cost && tokenBalance-cost >= 0 {
-		tokenBalance -= cost
-		fmt.Printf("Processed request. Cost: %d, Remaining: %d\n", cost, tokenBalance)
+	fmt.Printf("prev_token_balance:%d,post_token_balance:%d,cost:%d", tokenBalance, tokenBalance-cost, cost)
 
-		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(TokenResponse{Tokens: tokenBalance})
-		return
+	tokenBalance -= cost
+
+	response := &OffersResponse{}
+
+	if tokenBalance < 0 {
+		fmt.Printf("Insufficient balance. Cost: %d, Available: %d\n", cost, tokenBalance)
+
+		fmt.Println("Fetching campaigns.")
+		response, err = getOffers(initData)
+		if err != nil {
+			fmt.Println("Failed fetching offers" + err.Error())
+			return
+		}
+		processCampaignDetails(response, initData.AppHash, initData.UserUUID)
 	}
 
-	fmt.Println("Insufficient balance.")
-	fmt.Println("Fetching campaigns.")
-	offers, err := getOffers(initData)
-	if err != nil {
-		fmt.Println("Failed fetching offers" + err.Error())
-		return
-	}
-	processCampaignDetails(offers, initData.AppHash, initData.UserUUID)
-	// Example: Just returning the offers found
+	response.Tokens = tokenBalance
+
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(offers)
+	json.NewEncoder(w).Encode(response)
 }
 
 func getOffers(initData *InitResponse) (*OffersResponse, error) {
