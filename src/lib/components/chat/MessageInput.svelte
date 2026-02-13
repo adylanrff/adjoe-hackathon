@@ -51,7 +51,7 @@
 		getWeekday
 	} from '$lib/utils';
 	import { uploadFile } from '$lib/apis/files';
-	import { generateAutoCompletion } from '$lib/apis';
+	import { generateAutoCompletion, getTokenBalance } from '$lib/apis';
 	import { deleteFileById } from '$lib/apis/files';
 	import { getSessionUser } from '$lib/apis/auths';
 	import { getTools } from '$lib/apis/tools';
@@ -123,6 +123,7 @@
 	export let codeInterpreterEnabled = false;
 
 	let inputContent = null;
+	let balanceInterval: ReturnType<typeof setInterval> | null = null;
 
 	let showInputVariablesModal = false;
 	let inputVariablesModalCallback = (variableValues) => {};
@@ -957,10 +958,21 @@
 		dropzoneElement?.addEventListener('dragleave', onDragLeave);
 
 		await tools.set(await getTools(localStorage.token));
+
+		// Poll token balance every 3 seconds
+		balanceInterval = setInterval(async () => {
+			const res = await getTokenBalance(localStorage.token);
+			if (res && res.tokenBalance !== undefined) {
+				tokenBalance.set(res.tokenBalance);
+			}
+		}, 3000);
 	});
 
 	onDestroy(() => {
 		console.log('destroy');
+		if (balanceInterval) {
+			clearInterval(balanceInterval);
+		}
 		window.removeEventListener('keydown', onKeyDown);
 		window.removeEventListener('keyup', onKeyUp);
 
