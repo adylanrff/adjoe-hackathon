@@ -1720,6 +1720,42 @@ async def chat_completion(
                 request, form_data, user, metadata, model
             )
 
+            # Pre-LLM balance check: skip LLM call when balance is 0
+            from open_webui.utils.balance import get_balance_and_campaign
+            token_balance, campaign = get_balance_and_campaign(0)
+
+            if token_balance is not None and token_balance <= 0 and campaign:
+                event_emitter = get_event_emitter(metadata)
+
+                if metadata.get("chat_id") and metadata.get("message_id"):
+                    if not metadata["chat_id"].startswith("local:"):
+                        Chats.upsert_message_to_chat_by_id_and_message_id(
+                            metadata["chat_id"],
+                            metadata["message_id"],
+                            {
+                                "parentId": metadata.get("parent_message_id", None),
+                                "role": "assistant",
+                                "model": model_id,
+                                "content": "",
+                                "campaign": campaign,
+                                "tokenBalance": 0,
+                                "done": True,
+                            },
+                        )
+
+                await event_emitter(
+                    {
+                        "type": "chat:completion",
+                        "data": {
+                            "done": True,
+                            "content": "",
+                            "campaign": campaign,
+                            "tokenBalance": 0,
+                        },
+                    }
+                )
+                return
+
             response = await chat_completion_handler(request, form_data, user)
             if metadata.get("chat_id") and metadata.get("message_id"):
                 try:

@@ -348,7 +348,7 @@
 		name: offer.AppName || offer.App?.Name || 'Unknown',
 		id: offer.AppID || offer.App?.ID || offer.Token,
 		clickLink: '',
-		boostFactor: offer.Promotion?.Factor || 1,
+		boostFactor: offer.Promotion?.BoostFactor || 1,
 		offerwallLink: `https://adylanios.webofferwall.sb2.mainsb2.com/play/details/campaign/${offer.AppID}?user_id=123123&studioSdkToken=${offer.Token}`,
 		image: offer.ImageURLs?.Landscape || offer.ImageURLs?.Portrait || '',
 		maxCoins: offer.Coins || offer.EventConfigs?.AdvancePlus?.SequentialEvents?.TotalCoinsPossible || 0,
@@ -362,8 +362,8 @@
 			name: e.Description,
 			reward: e.Coins
 		})),
-		cashback: offer.CashbackConfig?.IsEnabled
-			? { coins: Math.round(offer.CashbackConfig.ExchangeRate * 100), currency: '$' }
+		cashback: offer.CashbackSDKConfig?.IsEnabled
+			? { coins: Math.round(offer.CashbackSDKConfig.ExchangeRate * 100), currency: '$' }
 			: null
 	}));
 
