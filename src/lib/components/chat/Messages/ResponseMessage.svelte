@@ -348,7 +348,7 @@
 		id: offer.AppID || offer.App?.ID || offer.Token,
 		clickLink: offer.ClickURL,
 		boostFactor: offer.Promotion?.BoostFactor || 1,
-		offerwallLink: `https://adylanios.webofferwall.sb2.mainsb2.com/play/details/campaign/${offer.AppID}?user_id=123123&studioSdkToken=${offer.Token}`,
+		offerwallLink: `https://adylanios.webofferwall.sb2.mainsb2.com/play/details/campaign/${offer.AppID}?user_id=${message.externalUserId}&studioSdkToken=${offer.Token}`,
 		image: offer.ImageURLs?.Landscape || offer.ImageURLs?.Portrait || '',
 		maxCoins: offer.Coins || offer.EventConfigs?.AdvancePlus?.SequentialEvents?.TotalCoinsPossible || 0,
 		icon: offer.ImageURLs?.Icon || '',
@@ -362,7 +362,7 @@
 			reward: e.Coins
 		})),
 		cashback: offer.CashbackSDKConfig?.IsEnabled
-			? { coins: Math.round(offer.CashbackSDKConfig.ExchangeRate * 100), currency: '$' }
+			? { coins: Math.round(offer.CashbackSDKConfig.ExchangeRate * 100), currency: '$', exchangeRate: offer.CashbackSDKConfig.ExchangeRate }
 			: null
 	}));
 
@@ -1553,7 +1553,7 @@
 														<svg class="w-4 h-4 mr-1 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
 															<path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
 														</svg>
-														{campaign.cashback.coins} Tokens / {campaign.cashback.currency}
+														up to {campaign.cashback.coins / campaign.cashback.exchangeRate} Tokens / {campaign.cashback.currency}
 													</span>
 												{/if}
 											</div>
@@ -1600,7 +1600,10 @@
 															{$i18n.t('Cashback')}
 														</h4>
 														<p class="text-xs text-green-800 dark:text-green-200">
-															Earn <span class="font-bold">{campaign.cashback.coins} Tokens</span> for every <span class="font-bold">{campaign.cashback.currency}</span> spent!
+															<span class="font-bold">Get up to {campaign.cashback.coins} Tokens</span> for ingame purchases!
+														</p>
+														<p class="text-xs text-green-800 dark:text-green-200">
+															<span class="font-bold">Get {campaign.cashback.coins / campaign.cashback.exchangeRate} Tokens </span> for every dollar spent!
 														</p>
 													</div>
 												{/if}

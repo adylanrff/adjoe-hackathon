@@ -89,8 +89,8 @@
 				const logo = document.createElement('img');
 				logo.id = 'logo';
 				logo.style =
-					'position: absolute; width: auto; height: 6rem; top: 44%; left: 50%; transform: translateX(-50%); display:block;';
-				logo.src = isDarkMode ? '/static/splash-dark.png' : '/static/splash.png';
+					'position: absolute; width: auto; height: 6rem; top: 44%; left: 50%; transform: translateX(-50%); display:block; border-radius: 50%;';
+				logo.src = 'https://avatars.githubusercontent.com/u/44399625?s=200&v=4';
 
 				document.addEventListener('DOMContentLoaded', function () {
 					const splash = document.getElementById('splash-screen');
@@ -103,7 +103,7 @@
 			})();
 		</script>
 
-		<title>Open WebUI</title>
+		<title>adjoe Play to Chat</title>
 
 		%sveltekit.head%
 	</head>
@@ -137,8 +137,8 @@
 			>
 				<img
 					id="logo-her"
-					style="width: auto; height: 13rem"
-					src="/static/splash.png"
+					style="width: auto; height: 13rem; border-radius: 50%;"
+					src="https://avatars.githubusercontent.com/u/44399625?s=200&v=4"
 					class="animate-pulse-fast"
 				/>
 

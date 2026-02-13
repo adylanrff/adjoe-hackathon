@@ -1528,6 +1528,7 @@
 										<IntegrationsMenu
 											selectedModels={atSelectedModel ? [atSelectedModel.id] : selectedModels}
 											{toggleFilters}
+											{history}
 											{showWebSearchButton}
 											{showImageGenerationButton}
 											{showCodeInterpreterButton}

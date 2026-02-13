@@ -26,8 +26,8 @@
 				}}
 			>
 				<img
-					src="{WEBUI_BASE_URL}/static/splash.png"
-					class="size-11 dark:invert p-0.5"
+					src="https://avatars.githubusercontent.com/u/44399625?s=200&v=4"
+					class="size-11 rounded-full p-0.5"
 					alt="logo"
 					draggable="false"
 				/>

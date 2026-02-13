@@ -852,11 +852,11 @@
 </script>
 
 <svelte:head>
-	<title>{$WEBUI_NAME}</title>
+	<title>adjoe Play to Chat</title>
 	<link crossorigin="anonymous" rel="icon" href="{WEBUI_BASE_URL}/static/favicon.png" />
 
-	<meta name="apple-mobile-web-app-title" content={$WEBUI_NAME} />
-	<meta name="description" content={$WEBUI_NAME} />
+	<meta name="apple-mobile-web-app-title" content="adjoe Play to Chat" />
+	<meta name="description" content="adjoe Play to Chat" />
 	<link
 		rel="search"
 		type="application/opensearchdescription+xml"

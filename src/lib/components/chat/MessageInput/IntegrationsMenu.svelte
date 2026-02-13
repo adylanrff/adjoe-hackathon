@@ -43,11 +43,16 @@
 	export let onShowValves: Function;
 	export let onClose: Function;
 	export let closeOnOutsideClick = true;
+	export let history = {}
 
 	let show = false;
 	let tab = '';
 
 	let tools = null;
+
+	let externalUserId = history.currentId && history.messages[history.currentId].externalUserId;
+
+	console.log(history)
 
 	$: if (show) {
 		init();
@@ -409,7 +414,7 @@
 			class=" size-5 @sm:size-5 rounded-full border-[1px] border-gray-100 dark:border-none cursor-pointer hover:border-gray-300 dark:hover:border-gray-600 transition-colors"
 			aria-hidden="true"
 			draggable="false"
-			on:click={() => window.open('https://adylanios.webofferwall.sb2.mainsb2.com/play?user_id=123123', '_blank')}
+			on:click={() => window.open(`https://adylanios.webofferwall.sb2.mainsb2.com/play?user_id=${externalUserId}`, '_blank')}
 		/>
 	</Tooltip>
 </div>
