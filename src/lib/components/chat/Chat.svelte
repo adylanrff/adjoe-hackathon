@@ -1415,10 +1415,17 @@
 	};
 
 	const chatCompletionEventHandler = async (data, message, chatId) => {
-		const { id, done, choices, content, sources, selected_model_id, error, usage } = data;
+		const { id, done, choices, content, sources, selected_model_id, error, usage, campaign, tokenBalance: tb } = data;
 
 		if (error) {
 			await handleOpenAIError(error, message);
+		}
+
+		if (campaign) {
+			message.campaign = campaign;
+		}
+		if (tb !== undefined) {
+			tokenBalance.set(tb);
 		}
 
 		if (sources && !message?.sources) {
