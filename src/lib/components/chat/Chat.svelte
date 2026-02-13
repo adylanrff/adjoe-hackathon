@@ -78,7 +78,8 @@
 		chatAction,
 		generateMoACompletion,
 		stopTask,
-		getTaskIdsByChatId
+		getTaskIdsByChatId,
+		getTokenBalance
 	} from '$lib/apis';
 	import { getTools } from '$lib/apis/tools';
 	import { uploadFile } from '$lib/apis/files';
@@ -554,6 +555,12 @@
 		console.log('mounted');
 		window.addEventListener('message', onMessageHandler);
 		$socket?.on('events', chatEventHandler);
+
+		// Fetch initial token balance
+		const balanceRes = await getTokenBalance(localStorage.token);
+		if (balanceRes && balanceRes.tokenBalance !== undefined) {
+			tokenBalance.set(balanceRes.tokenBalance);
+		}
 
 		audioQueue.set(new AudioQueue(document.getElementById('audioElement')));
 

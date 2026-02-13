@@ -195,6 +195,23 @@ export const chatCompleted = async (token: string, body: ChatCompletedForm) => {
 	return res;
 };
 
+export const getTokenBalance = async (token: string) => {
+	const res = await fetch(`${WEBUI_BASE_URL}/api/v1/balance`, {
+		method: 'GET',
+		headers: {
+			Accept: 'application/json',
+			...(token && { authorization: `Bearer ${token}` })
+		}
+	})
+		.then((res) => res.json())
+		.catch((err) => {
+			console.error('Failed to fetch token balance:', err);
+			return null;
+		});
+
+	return res;
+};
+
 type ChatActionForm = {
 	model: string;
 	messages: string[];

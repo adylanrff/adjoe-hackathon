@@ -340,6 +340,7 @@
 	let preprocessedDetailsCache = [];
 
 	let flipped = {};
+	let campaigns = [];
 
 	console.log(message);
 
@@ -365,6 +366,27 @@
 			? { coins: Math.round(offer.CashbackConfig.ExchangeRate * 100), currency: '$' }
 			: null
 	}));
+
+	let scrolledToTop = false;
+	let lastMessageId = null;
+
+	$: if (message.id !== lastMessageId) {
+		scrolledToTop = false;
+		lastMessageId = message.id;
+	}
+
+	$: if (campaigns && campaigns.length > 0 && message.done && isLastMessage && !scrolledToTop) {
+		scrolledToTop = true;
+		(async () => {
+			await tick();
+			const element = document.getElementById(`message-${message.id}`);
+			if (element) {
+				setTimeout(() => {
+					element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+				}, 5);
+			}
+		})();
+	}
 
 	function preprocessForEditing(content: string): string {
 		// Replace <details>...</details> with unique ID placeholder
@@ -1330,8 +1352,7 @@
 																stroke-linecap="round"
 																stroke-linejoin="round"
 																d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"
-															/>
-														</svg>
+														/>
 													</div>
 												</Tooltip>
 											</RegenerateMenu>
@@ -1372,9 +1393,8 @@
 														<path
 															stroke-linecap="round"
 															stroke-linejoin="round"
-															d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"
-														/>
-													</svg>
+															d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125"
+													/>
 												</button>
 											</Tooltip>
 										{/if}
@@ -1477,9 +1497,9 @@
 						</div>
 					{/if}
 				{/if}
-				{#if campaigns.length > 0}
+				{#if campaigns.length > 0 && message.done}
 					<div class="mt-2.5">
-						<div class="text-center text-gray-700 dark:text-gray-300 mb-4">
+						<div class="text-center text-gray-700 dark:text-gray-300 mb-4 mt-20">
 						You are out of tokens, but don't worry! You can earn more tokens by downloading one of the games below and playing it. Each game has a different token reward, so choose the one that suits you best. Happy gaming!
 						</div>
 						<div class="flex flex-wrap justify-center gap-4" >
@@ -1517,11 +1537,12 @@
 											{/if}
 
 											<div class="flex items-center mb-4 flex-wrap gap-2 justify-center">
-												<span class="inline-flex items-center px-3 py-1 bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 rounded-full font-semibold text-sm shadow">
-													<svg class="w-4 h-4 mr-1 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+												<span class="inline-flex items-center px-4 py-2 bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 rounded-full font-bold text-lg shadow">
+													<svg class="w-5 h-5 mr-1 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
 														<path d="M10 15.27L16.18 18l-1.64-7.03L20 7.24l-7.19-.61L10 0 7.19 6.63 0 7.24l5.46 3.73L3.82 18z" />
 													</svg>
-													{$i18n.t('Max Tokens')}: {campaign.maxCoins * (campaign.boostFactor || 1)}
+													<span class="mr-1 text-sm font-normal">{$i18n.t('Max Tokens')}:</span>
+													<span class="text-xl font-black">{campaign.maxCoins * (campaign.boostFactor || 1)}</span>
 												</span>
 												{#if campaign.cashback}
 													<span class="inline-flex items-center px-3 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full font-semibold text-sm shadow">
@@ -1555,7 +1576,6 @@
 												<button class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300" on:click={() => { flipped[campaign.id] = false; flipped = flipped; }}>
 													<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
   														<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-													</svg>
 												</button>
 											</div>
 
@@ -1604,7 +1624,7 @@
 											</div>
 
 											<button
-												class="w-full px-4 py-2 bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white font-semibold rounded-xl shadow transition duration-150 ease-in-out shrink-0 mt-2"
+												class="w-full px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-xl shadow transition duration-150 ease-in-out shrink-0 mt-2"
 												on:click={() => { window.open(campaign.offerwallLink, '_blank'); }}
 											>
 												{$i18n.t('Show in Offerwall')}
