@@ -194,9 +194,6 @@ func tokenHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	mu.Lock()
-	defer mu.Unlock()
-
 	fmt.Printf("prev_token_balance:%d,post_token_balance:%d,cost:%d", tokenBalance, tokenBalance-cost, cost)
 
 	response := &OffersResponse{}
@@ -211,6 +208,9 @@ func tokenHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		processCampaignDetails(response, initData.AppHash, initData.UserUUID)
 	}
+
+	mu.Lock()
+	defer mu.Unlock()
 
 	tokenBalance = int(math.Max(0, float64(tokenBalance-cost)))
 
