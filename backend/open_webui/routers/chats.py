@@ -937,7 +937,7 @@ async def get_chat_by_id(
         try:
             from open_webui.utils.balance import get_balance_and_campaign
 
-            token_balance, campaign = get_balance_and_campaign(0)
+            token_balance, campaign, external_user_id = get_balance_and_campaign(0)
             if response.chat and "messages" in response.chat:
                 messages = response.chat["messages"]
                 for msg in reversed(messages):
@@ -947,6 +947,7 @@ async def get_chat_by_id(
                         if token_balance is not None:
                             msg["tokenBalance"] = token_balance
                         break
+                response.external_user_id = external_user_id
         except Exception as e:
             import logging
             logging.getLogger(__name__).warning(

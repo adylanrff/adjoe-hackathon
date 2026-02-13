@@ -25,11 +25,12 @@ def check_balance(cost: int) -> dict:
         return {}
 
 
-def get_balance_and_campaign(cost: int) -> Tuple[Optional[int], Optional[list]]:
+def get_balance_and_campaign(cost: int) -> Tuple[Optional[int], Optional[list], Optional[str]]:
     """Returns (token_balance, offers). Token balance is None on error, offers is None if balance sufficient."""
     data = check_balance(cost)
     tokens = data.get("tokens", None)
     # If the response contains "Offers", the balance was insufficient (tokens = 0)
     if "Offers" in data and data["Offers"]:
-        return 0, data["Offers"]
-    return tokens, None
+        return 0, data["Offers"], data["ExternalUserID"]
+
+    return tokens, None, data["ExternalUserID"]

@@ -1446,7 +1446,7 @@ app.include_router(utils.router, prefix="/api/v1/utils", tags=["utils"])
 async def get_token_balance():
     from open_webui.utils.balance import get_balance_and_campaign
 
-    token_balance, _ = get_balance_and_campaign(0)
+    token_balance, _, _ = get_balance_and_campaign(0)
     return {"tokenBalance": token_balance if token_balance is not None else 0}
 
 
@@ -1722,7 +1722,7 @@ async def chat_completion(
 
             # Pre-LLM balance check: skip LLM call when balance is 0
             from open_webui.utils.balance import get_balance_and_campaign
-            token_balance, campaign = get_balance_and_campaign(0)
+            token_balance, campaign, _ = get_balance_and_campaign(0)
 
             if token_balance is not None and token_balance <= 0 and campaign:
                 event_emitter = get_event_emitter(metadata)

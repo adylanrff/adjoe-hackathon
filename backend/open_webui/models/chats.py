@@ -159,6 +159,7 @@ class ChatResponse(BaseModel):
     pinned: Optional[bool] = False
     meta: dict = {}
     folder_id: Optional[str] = None
+    external_user_id: Optional[str] = None
 
 
 class ChatTitleIdResponse(BaseModel):

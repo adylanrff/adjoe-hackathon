@@ -366,7 +366,7 @@ async def chat_completed(request: Request, form_data: dict, user: Any):
                 usage = msg.get("usage", {}) if isinstance(msg, dict) else {}
                 total_tokens += usage.get("total_tokens", 0)
 
-            token_balance, campaign = get_balance_and_campaign(total_tokens)
+            token_balance, campaign, external_user_id = get_balance_and_campaign(total_tokens)
             if isinstance(result, dict) and messages:
                 for msg in reversed(messages):
                     if isinstance(msg, dict) and msg.get("role") == "assistant":
@@ -375,6 +375,8 @@ async def chat_completed(request: Request, form_data: dict, user: Any):
                         if token_balance is not None:
                             msg["tokenBalance"] = token_balance
                         break
+
+                result["external_user_id"] = external_user_id
         except Exception as e:
             log.warning(f"Balance check in chat_completed failed: {e}")
 
