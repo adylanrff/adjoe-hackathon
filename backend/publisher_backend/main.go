@@ -45,11 +45,9 @@ type CampaignDetail struct {
 	Promotion              *Promotion        `json:",omitempty"`
 }
 type Promotion struct {
-	Factor      float64   `json:"Factor"`
-	Label       string    `json:"Label"`
-	Description string    `json:"Description"`
-	StartsAt    time.Time `json:"StartsAt"`
-	EndsAt      time.Time `json:"EndsAt"`
+	Factor   float64   `json:"BoostFactor"`
+	StartsAt time.Time `json:"StartAt"`
+	EndsAt   time.Time `json:"StopAt"`
 }
 
 type CashbackSDKConfig struct {
@@ -136,8 +134,8 @@ type Offer struct {
 	Coins          int               `json:"Coins"`
 	Token          string            `json:"Token"`
 	IsRecommended  bool              `json:"IsRecommended"`
-	ImageURLs      map[string]string `json:"ImageURLs"`
-	VideoURLs      map[string]string `json:"VideoURLs"`
+	ImageURLs      CreativeURLs      `json:"ImageURLs"`
+	VideoURLs      CreativeURLs      `json:"VideoURLs"`
 	App            AppInfo           `json:"App"`
 	Description    string            `json:"Description"`
 	EventConfigs   EventConfigs      `json:"EventConfigs"`
@@ -220,6 +218,7 @@ func getOffers(initData *InitResponse) (*OffersResponse, error) {
 	params.Add("ignore_constraints", "CountryMatchConstraint,SDKAdvancePlusSupportConstraint,PlatformConstraint,StudioSDKNonS2SConstraint,IosFraudConstraints")
 	params.Add("inspect_country", "DE")
 	params.Add("usage_access_allowed", "false")
+	params.Add("placement", "both")
 
 	fullURL := baseURL + "?" + params.Encode()
 	// 3. Create Request
@@ -244,7 +243,7 @@ func getOffers(initData *InitResponse) (*OffersResponse, error) {
 
 	// ... after client.Do(req) ...
 	bodyBytes, _ := io.ReadAll(resp.Body)
-
+	//fmt.Println("Debug", string(bodyBytes))
 	// Re-open the body for the JSON decoder since we just read it
 	resp.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
 
@@ -261,10 +260,12 @@ func getOffers(initData *InitResponse) (*OffersResponse, error) {
 func processCampaignDetails(offers *OffersResponse, sdkHash, userUUID string) {
 	for _, offer := range offers.Offers {
 		// Construct URL with the Token from the offer
-		url := fmt.Sprintf("https://sb2.mainsb2.com/v1/studio-sdk/sdk/%s/tokens/%s/language/en/campaign-details",
+		params := url.Values{}
+		params.Add("placement", "both")
+		baseURL := fmt.Sprintf("https://sb2.mainsb2.com/v1/studio-sdk/sdk/%s/tokens/%s/language/en/campaign-details",
 			sdkHash, offer.Token)
-
-		req, _ := http.NewRequest("GET", url, nil)
+		fullURL := baseURL + "?" + params.Encode()
+		req, _ := http.NewRequest("GET", fullURL, nil)
 		req.Header.Set("Adjoe-UserUUID", userUUID)
 
 		resp, err := http.DefaultClient.Do(req)
@@ -287,6 +288,8 @@ func processCampaignDetails(offers *OffersResponse, sdkHash, userUUID string) {
 			offer.CashbackConfig = c.CashbackConfig
 			offer.Description = c.Description
 			offer.EventConfigs = c.EventConfigs
+			offer.Promotion = c.Promotion
+			offer.ImageURLs = c.ImageURLs
 		}
 	}
 }
