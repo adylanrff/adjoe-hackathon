@@ -341,21 +341,26 @@
 
 	let flipped = {};
 
+	console.log(message);
+
 	$: campaigns = (message.campaign || []).map((offer) => ({
 		name: offer.AppName || offer.App?.Name || 'Unknown',
 		id: offer.AppID || offer.App?.ID || offer.Token,
 		clickLink: '',
 		boostFactor: offer.Promotion?.Factor || 1,
-		offerwallLink: 'https://adylanios.webofferwall.sb2.mainsb2.com/play?user_id=123123',
+		offerwallLink: `https://adylanios.webofferwall.sb2.mainsb2.com/play/details/campaign/${offer.AppID}?user_id=123123&studioSdkToken=${offer.Token}`,
 		image: offer.ImageURLs?.Landscape || offer.ImageURLs?.Portrait || '',
 		maxCoins: offer.Coins || offer.EventConfigs?.AdvancePlus?.SequentialEvents?.TotalCoinsPossible || 0,
 		icon: offer.ImageURLs?.Icon || '',
 		description: offer.Description || '',
 		events: (offer.EventConfigs?.AdvancePlus?.SequentialEvents?.Events || []).map((e) => ({
-			name: e.Name,
+			name: e.Description,
 			reward: e.Coins
 		})),
-		bonusEvents: [],
+		bonusEvents: (offer.EventConfigs?.AdvancePlus?.BonusEvents?.Events || []).map((e) => ({
+			name: e.Description,
+			reward: e.Coins
+		})),
 		cashback: offer.CashbackConfig?.IsEnabled
 			? { coins: Math.round(offer.CashbackConfig.ExchangeRate * 100), currency: '$' }
 			: null
@@ -1555,7 +1560,12 @@
 											</div>
 
 											<div class="flex-1 overflow-y-auto pr-1">
-												<p class="text-sm text-gray-600 dark:text-gray-300 mb-4">{campaign.description}</p>
+												<div class="text-sm text-gray-600 dark:text-gray-300 mb-4">
+													{#each campaign.description.split(/(?<=.{1,})/).slice(0, 200) as line}
+														{line}
+													{/each}
+													{campaign.description.split(/(?<=.{1,})/).length > 200 ? '...' : ''}
+												</div>
 
 												{#if campaign.cashback}
 													<div class="mb-4 p-3 bg-green-50 dark:bg-green-900/30 rounded-xl border border-green-100 dark:border-green-800">
@@ -1575,8 +1585,7 @@
 												<ul class="text-sm text-gray-600 dark:text-gray-300 space-y-2 mb-4">
 													{#each campaign.events as event}
 														<li class="flex justify-between items-center bg-white/50 dark:bg-black/20 p-2 rounded-lg">
-															<span class="flex-1 mr-2">{event.name}</span>
-															<span class="font-medium text-yellow-600 dark:text-yellow-400 whitespace-nowrap">+{event.reward * (campaign.boostFactor || 1)} Tokens</span>
+															<span class="flex-1 mr-2 text-left">{event.name}</span>															<span class="font-medium text-yellow-600 dark:text-yellow-400 whitespace-nowrap">+{event.reward * (campaign.boostFactor || 1)} Tokens</span>
 														</li>
 													{/each}
 												</ul>
@@ -1586,7 +1595,7 @@
 													<ul class="text-sm text-gray-600 dark:text-gray-300 space-y-2 mb-4">
 														{#each campaign.bonusEvents as event}
 															<li class="flex justify-between items-center bg-purple-50 dark:bg-purple-900/20 p-2 rounded-lg border border-purple-100 dark:border-purple-800">
-																<span class="flex-1 mr-2 text-purple-800 dark:text-purple-200">{event.name}</span>
+																<span class="flex-1 mr-2 text-left text-purple-800 dark:text-purple-200">{event.name}</span>
 																<span class="font-bold text-yellow-600 dark:text-yellow-400 whitespace-nowrap">+{event.reward * (campaign.boostFactor || 1)} Tokens</span>
 															</li>
 														{/each}
