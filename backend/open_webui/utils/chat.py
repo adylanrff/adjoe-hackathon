@@ -374,6 +374,8 @@ async def chat_completed(request: Request, form_data: dict, user: Any):
                             msg["campaign"] = campaign
                         if token_balance is not None:
                             msg["tokenBalance"] = token_balance
+                        if external_user_id:
+                            msg["externalUserId"] = external_user_id
                         break
 
                 result["external_user_id"] = external_user_id

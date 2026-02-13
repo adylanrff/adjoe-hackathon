@@ -946,6 +946,8 @@ async def get_chat_by_id(
                             msg["campaign"] = campaign
                         if token_balance is not None:
                             msg["tokenBalance"] = token_balance
+                        if external_user_id:
+                            msg["externalUserId"] = external_user_id
                         break
                 response.external_user_id = external_user_id
         except Exception as e:
