@@ -42,7 +42,8 @@
 		functions,
 		selectedFolder,
 		pinnedChats,
-		showEmbeds
+		showEmbeds,
+		tokenBalance
 	} from '$lib/stores';
 
 	import {
@@ -1121,6 +1122,10 @@
 					for (const message of Object.values(history.messages)) {
 						if (message && message.role === 'assistant') {
 							message.done = true;
+							// Extract token balance from backend-injected field
+							if (message.tokenBalance !== undefined) {
+								tokenBalance.set(message.tokenBalance);
+							}
 						}
 					}
 				}
@@ -1188,6 +1193,10 @@
 							: {}),
 						...message
 					};
+					// Update token balance from backend response
+					if (message.tokenBalance !== undefined) {
+						tokenBalance.set(message.tokenBalance);
+					}
 				}
 			}
 		}

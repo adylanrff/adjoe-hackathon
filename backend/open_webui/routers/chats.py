@@ -933,17 +933,19 @@ async def get_chat_by_id(
     if chat:
         response = ChatResponse(**chat.model_dump())
 
-        # Check balance and inject campaign if needed
+        # Check balance and inject campaign/token info
         try:
-            from open_webui.utils.balance import get_campaign_if_needed
+            from open_webui.utils.balance import get_balance_and_campaign
 
-            campaign = get_campaign_if_needed(0)
-            if campaign and response.chat and "messages" in response.chat:
+            token_balance, campaign = get_balance_and_campaign(0)
+            if response.chat and "messages" in response.chat:
                 messages = response.chat["messages"]
-                # Find the last assistant message and attach campaign
                 for msg in reversed(messages):
                     if isinstance(msg, dict) and msg.get("role") == "assistant":
-                        msg["campaign"] = campaign
+                        if campaign:
+                            msg["campaign"] = campaign
+                        if token_balance is not None:
+                            msg["tokenBalance"] = token_balance
                         break
         except Exception as e:
             import logging

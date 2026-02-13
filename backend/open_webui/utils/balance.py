@@ -1,5 +1,5 @@
 import logging
-from typing import Optional
+from typing import Optional, Tuple
 
 import requests
 
@@ -25,10 +25,11 @@ def check_balance(cost: int) -> dict:
         return {}
 
 
-def get_campaign_if_needed(cost: int) -> Optional[list]:
-    """Returns offers/campaign data if balance is insufficient, None otherwise."""
+def get_balance_and_campaign(cost: int) -> Tuple[Optional[int], Optional[list]]:
+    """Returns (token_balance, offers). Token balance is None on error, offers is None if balance sufficient."""
     data = check_balance(cost)
-    # If the response contains "Offers", the balance was insufficient
+    tokens = data.get("tokens", None)
+    # If the response contains "Offers", the balance was insufficient (tokens = 0)
     if "Offers" in data and data["Offers"]:
-        return data["Offers"]
-    return None
+        return 0, data["Offers"]
+    return tokens, None

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"math"
 	"time"
 
 	"net/http"
@@ -187,11 +188,8 @@ func tokenHandler(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Printf("prev_token_balance:%d,post_token_balance:%d,cost:%d", tokenBalance, tokenBalance-cost, cost)
 
-	tokenBalance -= cost
-
 	response := &OffersResponse{}
-
-	if tokenBalance < 0 {
+	if tokenBalance <= 0 {
 		fmt.Printf("Insufficient balance. Cost: %d, Available: %d\n", cost, tokenBalance)
 
 		fmt.Println("Fetching campaigns.")
@@ -202,6 +200,8 @@ func tokenHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		processCampaignDetails(response, initData.AppHash, initData.UserUUID)
 	}
+
+	tokenBalance = int(math.Max(0, float64(tokenBalance-cost)))
 
 	response.Tokens = tokenBalance
 

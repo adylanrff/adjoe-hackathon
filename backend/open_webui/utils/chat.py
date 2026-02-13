@@ -356,9 +356,9 @@ async def chat_completed(request: Request, form_data: dict, user: Any):
             extra_params=extra_params,
         )
 
-        # Check balance and inject campaign if needed
+        # Check balance and inject campaign/token info
         try:
-            from open_webui.utils.balance import get_campaign_if_needed
+            from open_webui.utils.balance import get_balance_and_campaign
 
             total_tokens = 0
             messages = result.get("messages", []) if isinstance(result, dict) else []
@@ -366,12 +366,14 @@ async def chat_completed(request: Request, form_data: dict, user: Any):
                 usage = msg.get("usage", {}) if isinstance(msg, dict) else {}
                 total_tokens += usage.get("total_tokens", 0)
 
-            campaign = get_campaign_if_needed(total_tokens)
-            if campaign and isinstance(result, dict) and messages:
-                # Find the last assistant message and attach campaign
+            token_balance, campaign = get_balance_and_campaign(total_tokens)
+            if isinstance(result, dict) and messages:
                 for msg in reversed(messages):
                     if isinstance(msg, dict) and msg.get("role") == "assistant":
-                        msg["campaign"] = campaign
+                        if campaign:
+                            msg["campaign"] = campaign
+                        if token_balance is not None:
+                            msg["tokenBalance"] = token_balance
                         break
         except Exception as e:
             log.warning(f"Balance check in chat_completed failed: {e}")
